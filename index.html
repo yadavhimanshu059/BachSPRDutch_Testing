@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My experiment</title>
+    <meta charset="UTF-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://proliferate.alps.science/static/js/proliferate.js" type="text/javascript"></script>
+    <script src="jspsych-6/jspsych_1.js"></script>
+    <script src="jspsych-6/plugins/jspsych-call-function.js"></script>
+    <script src= "jspsych-6/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src= "jspsych-6/plugins/jspsych-html-button-response.js"></script>
+    <script src= "jspsych-6/plugins/jspsych-html-keyboard-response-ld.js"></script>
+    <script src= "jspsych-6/plugins/jspsych-survey-text.js"></script>
+    <script src= "jspsych-6/plugins/jspsych-survey-multi-choice.js"></script>
+    <script src="jspsych-6/plugins/jspsych-survey-multi-select.js"></script>
+    <script src= "jspsych-6/plugins/jspsych-html-slider-response.js"></script>
+    <script src="jspsych-6/download.js"></script>
+    <script src="specs_lexical_decision.js"></script>
+    <script src="lists_lexical_decision.js"></script>
+    <script src="lists_prestudy.js"></script>
+
+    <!--<script src="download.js"></script>-->
+    <link href="jspsych-6/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    <style>
+      img {
+        width: 400px;
+      }
+    </style>
+  </head>
+  <body></body>
+  <script>
+      //var jsPsych = initJsPsych();
+
+      // capture info from Prolific
+      var subject_id = jsPsych.data.getURLVariable('PROLIFIC_PID');
+      var study_id = jsPsych.data.getURLVariable('STUDY_ID');
+      var session_id = jsPsych.data.getURLVariable('SESSION_ID');
+
+      jsPsych.data.addProperties({
+      subject_id: subject_id,
+      study_id: study_id,
+      session_id: session_id
+      });
+
+      var timeline = [];
+      var repeat_prac = false;
+      var start_time = Date.now();
+      /// participant id is decided
+      function formatted_date(){
+      	var result="";
+      	var d = new Date();
+      	result += d.getDate().toString()+(d.getMonth()+1).toString()+d.getFullYear().toString()+d.getHours().toString()+d.getMinutes().toString();
+      	return result;
+    	}
+
+      var participant_id = formatted_date();
+      var entry_number = 1
+      //prompt("Bitte geben Sie eine beliebige Zahl ein.");
+      var i=0,j=0;
+      var limit = number_of_items.reduce(function(a, b){
+                     return a + b;
+                 }, 0);
+
+
+    /* define instructions trial */
+    var instructions = {
+      type: "html-button-response",
+      stimulus: "<p> Door de volgende vragen te beantwoorden, neemt u deel aan een onderzoek dat wordt uitgevoerd door onderzoekers van het Department of Language Science van de University of California, Irvine. Als u vragen heeft over dit onderzoek, kunt u contact opnemen met Richard Futrell (rfutrell@uci.edu). U moet minstens 18 jaar oud zijn om deel te nemen. Uw deelname aan dit onderzoek is vrijwillig. U kunt op elk moment weigeren verder deel te nemen zonder nadelige gevolgen. Uw anonimiteit is gewaarborgd; de onderzoekers die u vragen deel te nemen, ontvangen geen persoonlijke gegevens over u. </p>",
+      choices: ['Verder'],
+
+      post_trial_gap: 500
+    };
+    timeline.push(instructions);
+
+    var instructions2 = {
+      type: "html-button-response",
+      stimulus: "<p> Dank u voor uw deelname aan dit experiment. U krijgt een aantal zinnen te zien. Geef voor elke zin aan hoe moeilijk of makkelijk het is om de zin te begrijpen, en kies dan de juiste uitspraak uit de gegeven alternatieven. </p>",
+      choices: ['Verder'],
+
+      post_trial_gap: 500
+    };
+    timeline.push(instructions2);
+
+    var instructions3 = {
+      type: "html-button-response",
+      stimulus: "<p> Elke zin wordt deel voor deel op het scherm weergegeven. Je ziet niet de hele zin in één keer. U ziet het eerste deel van de zin en wanneer u op de spatiebalk drukt, ziet u het tweede deel, enzovoort. Blijf de spatiebalk ingedrukt houden en lees de hele zin zo snel mogelijk door. Maar zorg ervoor dat je de betekenis van de zin begrijpt. Nadat u de zin hebt gelezen, wordt u gevraagd of de zin gemakkelijk te begrijpen is of niet. U moet uw antwoord geven met behulp van de schuifbalk die op het scherm wordt weergegeven. Als de zin zeer gemakkelijk te begrijpen is, schuif de knop dan naar “heel makkelijk”, als de zin zeer moeilijk te begrijpen is, schuif de knop dan naar “heel moeilijk”. Als de zin vrij gemakkelijk is, maar niet erg gemakkelijk, zet u de schuifregelaar in de richting van “vrij makkelijk”. </p>",
+      choices: ['Verder'],
+
+      post_trial_gap: 500
+    };
+    timeline.push(instructions3);
+
+    var instructions5 = {
+      type: "html-button-response",
+      stimulus: "<p> Nadat u uw beoordeling hebt gegeven, klikt u op “Verder”. Op het volgende scherm ziet u vier alternatieve uitspraken over de voorgaande zin. U moet het juiste alternatief kiezen. Nadat u een alternatief heeft gekozen, wordt u naar de volgende zin geleid. </p>",
+      choices: ['Verder'],
+
+      post_trial_gap: 500
+    };
+    timeline.push(instructions5);
+
+    var fixation = {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: [" ","Spacebar"],
+      trial_duration : 4000,
+      data : {stimulus: "fixation", roi: 0, correct_choice: 0, Particpant_id:participant_id, Entry_Number: entry_number,  Experiment_ID: '0', Item_ID : '0', Condition_ID : 'N', List_ID : '0'}
+    }
+
+
+    function shuffle(listo,choice){
+        switch(choice) {
+            case 0:
+                return listo;
+                break;
+            case 1:
+                return jsPsych.randomization.shuffle(listo);
+                break;
+            case 2:
+                var flag1=0;
+                var flag2=0;
+                var key=2;
+                if(ns==3){
+                    key=3;
+                }
+                while(flag1==0){
+                   flag2=0;
+                   listo = jsPsych.randomization.shuffle(listo);
+                   for(i=0;i<limit+number_of_fillers-1;i++){
+                       if(parseInt(listo[i][key])== parseInt(listo[i+1][key])){
+                           flag2=1;
+                           break;
+                       }
+                   }
+                   if(flag2==0){
+                       flag=1;
+                       return listo;
+                   }
+                }
+            default:
+                return listo;
+        }
+    }
+    var training = {
+      type: "html-button-response",
+      stimulus: "<p> Het experiment begint met een oefentest, zodat u het experiment begrijpt. </p>",
+      choices: ['Verder'],
+      post_trial_gap: 1000
+    };
+    timeline.push(training);
+
+    var plist=shuffle(praclist,choiceofe)
+    for(j=0;j<(number_of_pracitem);j++){
+        timeline.push(fixation);
+
+        var temp_prac = plist[j][5];
+        var num_pwords = plist[j][11];
+        for(var k=0;k<num_pwords;k++){
+          var newstr = temp_prac[k];
+          newstr = newstr.replace(/_/,' ');
+          var trial_p3_1 = {
+              type: "html-keyboard-response",
+              stimulus: '<p style="font-size:10px' + font_size + 'px; color:  ' + color + ' ;">' + newstr + '</p>',
+              choices: [" ","Spacebar"],
+              data : {stimulus: newstr, roi: k+1, correct_choice: 0, Particpant_id:participant_id, Entry_Number: entry_number,  Experiment_ID: plist[j][2], Item_ID : plist[j][0], Condition_ID : plist[j][1], List_ID : plist[j][4]}
+          }
+          timeline.push(trial_p3_1);
+        }
+
+        var trial_p3_2 = {
+            type: 'html-slider-response',
+            stimulus: '<p style="font-size:10px' + font_size + 'px; color:  ' + color + ' ;">' + "Hoe zou u deze zin beoordelen in termen van begripsmoeilijkheden?" + '<br> <br> <br>' + '</p>',
+            require_movement: true,
+            labels: ['heel makkelijk', 'vrij makkelijk', '.','vrij moeilijk','heel moeilijk'],
+            button_label: 'Verder',
+            slider_width : 500,
+            min: 1,
+            max: 9,
+            start: 5,
+            step: 0.001,
+            data : {stimulus: temp_prac, roi: 0, correct_choice: 0, Particpant_id:participant_id, Entry_Number: entry_number,  Experiment_ID: plist[j][2], Item_ID : plist[j][0], Condition_ID : plist[j][1], List_ID : plist[j][4]}
+        }
+        var prac_right = plist[j][6]
+        var prac_false1 = plist[j][7]
+        var prac_false2 = plist[j][8]
+        var prac_false3 = plist[j][9]
+        var shuffled_prac_alter = shuffle([prac_right,prac_false1,prac_false2,prac_false3],1)
+        var corr_choice = 0
+        for(c=0;c<4;c++){
+          if(shuffled_prac_alter[c]==prac_right){
+            corr_choice = c
+          }
+        }
+        var question_practice = {
+            type: "html-button-response",
+            stimulus: '<p style="font-size:10px' + font_size + 'px; color:  ' + color + ' ;">' + 'Welke van de vier uitspraken is juist? <br> ' + '</p>',
+            choices: shuffled_prac_alter,
+            margin_vertical: '15px',
+            margin_horizontal: '300px',
+            post_trial_gap: 500,
+            data : {stimulus:shuffled_prac_alter, roi: 0, correct_choice : corr_choice, Particpant_id:participant_id, Entry_Number: entry_number,  Experiment_ID: plist[j][2], Item_ID : plist[j][0], Condition_ID : plist[j][1], List_ID : plist[j][4]}
+        }
+
+        var prevdat = jsPsych.data.get().filter({Condition_ID: 'P',trial_type: "html-button-response"}).values()
+        var feed="Falsche Antwort!";
+        if(prevdat.response==corr_choice){
+           feed="Richtige Antwort!"
+        } else {
+           feed="Falsche Antwort!"
+        }
+
+        var feedback = {
+          type: "html-button-response",
+          stimulus: "<p>" + feed + '<br> <br> <br>' + "</p>",
+          choices: ['Verder'],
+          post_trial_gap: 500
+        }
+
+        var prac_sent = temp_prac.toString();
+        prac_sent = prac_sent.replaceAll(",", ' ');
+        prac_sent = prac_sent.replace(/_/, ' ');
+        var feedback_correct = {
+          type: "html-button-response",
+          stimulus: "<p>" + 'De zin: '+ prac_sent + '<br> <br> <br>' + 'Welke van de vier uitspraken is juist? <br> <br> ' + shuffled_prac_alter[0] + '<br>' +shuffled_prac_alter[1] + '<br>'+shuffled_prac_alter[2] + '<br>'+shuffled_prac_alter[3] + '<br> <br> <br>'+ 'Het juiste antwoord is: '+prac_right+ "</p>",
+          choices: ['Verder'],
+          post_trial_gap: 500
+        }
+        //timeline.push(fixation);
+        timeline.push(trial_p3_2);
+        timeline.push(question_practice);
+        //timeline.push(feedback);
+        timeline.push(feedback_correct);
+    }
+
+    var instructions4 = {
+      type: "html-button-response",
+      stimulus: "<p> Ter herinnering aan uw taak <br> <br> <br> De schuifbalk registreert uw intuïtie over de moeilijkheidsgraad van de zin. U kunt de schuif overal op de schaal plaatsen, afhankelijk van de moeilijkheidsgraad van de zin. Als u bijvoorbeeld denkt dat een zin erg moeilijk is, moet u de knop heel dicht bij “heel moeilijk”  schuiven en als u denkt dat een zin moeilijk is maar niet te moeilijk, moet u de knop naar “vrij moeilijk” schuiven maar niet te dicht bij ”heel moeilijk”. <br> <br> Nadat u met de schuifbalk heeft geantwoord en op de knop “Verder” heeft gedrukt, ziet u een scherm met vier alternatieve uitspraken. U moet het juiste alternatief kiezen voor de zin die u zonet op het vorige scherm heeft gelezen. </p>",
+      choices: ['Verder'],
+
+      post_trial_gap: 500
+    };
+    timeline.push(instructions4);
+
+    var endtraining = {
+      type: "html-button-response",
+      stimulus: "<p> Oefentests eindigen hier. Nu beginnen we met het hoofdexperiment. </p>",
+      choices: ['Verder'],
+      post_trial_gap: 1000
+    };
+    timeline.push(endtraining);
+
+        var ln = 0
+        var list = shuffle(lists[ln],choiceofe)
+        for(j=0;j<(limit+number_of_fillers);j++){
+            timeline.push(fixation);
+
+            var templist = list[j][5];
+            var num_words = list[j][11];
+            for(var k=0;k<num_words;k++){
+              var newstr = templist[k];
+              newstr = newstr.replace(/_/,' ');
+              var trial_3_1 = {
+                  type: "html-keyboard-response",
+                  stimulus: '<p style="font-size:10px' + font_size + 'px; color:  ' + color + ' ;">' + newstr + '</p>',
+                  choices: [" ","Spacebar"],
+                  data : {stimulus: newstr, roi: k+1, correct_choice: 0, Particpant_id:participant_id, Entry_Number: entry_number,  Experiment_ID: list[j][2], Item_ID : list[j][0], Condition_ID : list[j][1], List_ID : ln}
+              }
+              timeline.push(trial_3_1);
+            }
+
+            var trial_3_2 = {
+                type: 'html-slider-response',
+                stimulus: '<p style="font-size:10px' + font_size + 'px; color:  ' + color + ' ;">' + "Hoe zou u deze zin beoordelen in termen van begripsmoeilijkheden?" + '<br> <br> <br>' + '</p>',
+                require_movement: true,
+                labels: ['heel makkelijk', 'vrij makkelijk', '.','vrij moeilijk','heel moeilijk'],
+                button_label: 'Verder',
+                slider_width : 500,
+                min: 1,
+                max: 9,
+                start: 5,
+                step: 0.001,
+                data : {stimulus: templist, roi: 0, correct_choice: 0, Particpant_id:participant_id, Entry_Number: entry_number,  Experiment_ID: list[j][2], Item_ID : list[j][0], Condition_ID : list[j][1], List_ID : ln}
+            }
+
+            var temp_right = list[j][6]
+            var temp_false1 = list[j][7]
+            var temp_false2 = list[j][8]
+            var temp_false3 = list[j][9]
+            var shuffled_alternatives = shuffle([temp_right,temp_false1,temp_false2,temp_false3],1)
+            var corr_choice = 0
+            for(c=0;c<4;c++){
+              if(shuffled_alternatives[c]==temp_right){
+                corr_choice = c
+              }
+            }
+            var question_trial = {
+                type: "html-button-response",
+                stimulus: '<p style="font-size:10px' + font_size + 'px; color:  ' + color + ' ;">' + 'Welke van de vier uitspraken is juist? <br>' + '</p>',
+                choices: shuffled_alternatives,
+                margin_vertical: '15px',
+                margin_horizontal: '300px',
+                data : {stimulus:shuffled_alternatives, roi: 0, correct_choice: corr_choice, Particpant_id:participant_id, Entry_Number: entry_number,  Experiment_ID: list[j][2], Item_ID : list[j][0], Condition_ID : list[j][1], List_ID : list[j][4]},
+                post_trial_gap: 500
+            }
+
+            //timeline.push(fixation);
+            timeline.push(trial_3_2);
+            timeline.push(question_trial);
+        }
+
+
+      var instructions_survey = {
+        type: "html-button-response",
+        stimulus: "<p> Het experiment eindigt hier! Voordat u gaat, willen we u een paar vragen stellen. </p>",
+        choices: ['Verder'],
+
+        post_trial_gap: 500
+      };
+      timeline.push(instructions_survey);
+
+      var demo1 = {
+        type: 'survey-text',
+        questions: [
+          {prompt: "Hoe oud bent u?", name: 'age',required:true},
+          {prompt: "In welke regio bent u opgegroeid?", name: 'birthlocation',required:true},
+          {prompt: "In welke regio woont u nu?", name: 'currentlocation',required:true}
+        ],
+        required: true,
+        button_label: 'Verder',
+        post_trial_gap: 500
+      };
+      timeline.push(demo1);
+
+      var demo2 = {
+        type: 'survey-multi-choice',
+        questions: [
+          {prompt: "Wat is uw hoogste opleidingsniveau?", name: 'education', options: ["Middelbare school/MBO", "Bachelor/HBO", "Master", "Gepromoveerd","Anders"], required: true}
+        ],
+        required: true,
+        button_label: 'Verder',
+        post_trial_gap: 500
+      };
+      timeline.push(demo2);
+
+      var demo3 = {
+        type: 'survey-multi-select',
+        questions: [
+          {prompt: "Welke talen spreek je behalve Nederlands?", options: ["Duits","Engels","Frans"], horizontal: true, required: true, name: 'dutch'}
+        ],
+        required: true,
+        button_label: 'Verder',
+        post_trial_gap: 500
+      };
+      timeline.push(demo3);
+
+      var endmain = {
+        type: "html-keyboard-response",
+        stimulus: "<p> Hartelijk dank voor uw deelname. </p>",
+        trial_duration : 1000,
+      };
+      timeline.push(endmain);
+
+
+    function saveData(name, data){
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'write_data.php');
+      xhr.setRequestHeader('Content-Type', 'application/json');
+      xhr.send(JSON.stringify({filename: name, filedata: data}));
+      xhr.addEventListener("load", success);
+      xhr.addEventListener("error", failure);
+      download(data,name+".csv","file/csv");
+      function success(evt) {
+          document.body.innerHTML = '<p style="margin:auto"> Hartelijk dank voor uw deelname. </p>';
+      }
+      function failure(evt) {
+         document.body.innerHTML ='<p style="margin:auto"> Hartelijk dank voor uw deelname. </p>';
+      }
+    }
+    /* start the experiment */
+    jsPsych.init({
+      timeline: timeline,
+        on_finish: function(){
+            //saveData("ed"+ "_" + entry_number + "_" + participant_id + "_" + (Date.now()-start_time).toString(), jsPsych.data.get().filter([{trial_type: 'html-keyboard-response-ld'},{trial_type: 'survey-text'},{trial_type: 'survey-multi-choice'}]).json());
+            //proliferate.submit(jsPsych.data.get().filter([{trial_type: 'html-keyboard-response-ld'},{trial_type: 'survey-text'},{trial_type: 'survey-multi-choice'}]).json());
+            //proliferate.submit(jsPsych.data.get().filter({trial_type: 'html-keyboard-response-ld'}).csv());
+            //proliferate.submit(jsPsych.data.get().filter({trial_type: 'survey-text'}).json());
+            //proliferate.submit(jsPsych.data.get().filter({trial_type: 'survey-multi-choice'}).json());
+            proliferate.submit({"trials": jsPsych.data.get().filter([{trial_type: 'html-keyboard-response'},{trial_type: 'survey-text'},{trial_type: 'survey-multi-choice'},{trial_type: 'html-button-response',Entry_Number:1},{trial_type: 'html-slider-response',Entry_Number:1}]).values()});
+      }
+    });
+  </script>
+</html>

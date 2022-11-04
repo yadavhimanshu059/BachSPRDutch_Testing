@@ -1,0 +1,7 @@
+1			a			2			no			1			Timo heeft de_atleet de_marathon zien lopen.			De atleet heeft de marathon gelopen.			De atleet heeft de marathon gezien.			De atleet heeft Timo gezien.			Timo heeft de marathon gelopen.			
+
+1			b			2			yes			2			Timo heeft gezien dat de_atleet de_marathon liep.			De atleet heeft de marathon gelopen.			De atleet heeft de marathon gezien.			De atleet heeft Timo gezien.			Timo heeft de marathon gelopen.			
+
+1			c			3			no			3			De_verrekijker heeft Timo de_atleet de_marathon helpen zien lopen.			De atleet heeft de marathon gelopen.			De atleet heeft de marathon gezien.			De atleet heeft Timo gezien.			Timo heeft de marathon gelopen.			
+
+1			d			3			yes			4			De_verrekijker heeft Timo geholpen om_te_zien dat de_atleet de_marathon liep.			De atleet heeft de marathon gelopen.			De atleet heeft de marathon gezien.			De atleet heeft Timo gezien.			Timo heeft de marathon gelopen.		
